@@ -1,8 +1,3 @@
-"""
-main_cli.py — Unified Command Line Interface untuk Watermarking DCT + ECC
-Kamu bisa input parameter alpha, repeats, dan k_per_bit secara dinamis.
-"""
-
 import sys
 import os
 import numpy as np

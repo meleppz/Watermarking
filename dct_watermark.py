@@ -1,20 +1,3 @@
-"""
-dct_watermark.py — Stronger watermarking using DCT-domain spread-spectrum + repetition
-
-This module provides:
-- generate_binary_watermark
-- embed_watermark_dct
-- extract_watermark_dct
-- jpeg_compress
-- calculate_ber, calculate_nc, calculate_psnr
-
-Design notes:
-- Operates on Y channel (YCbCr), 8x8 DCT blocks (scipy dct)
-- Embeds each payload bit into multiple blocks (repetition) and multiple mid-band
-  coefficients via a pseudo-random sequence (seed key).
-- Uses additive spread-spectrum (alpha scaled) rather than tiny quant shifts.
-"""
-
 import io
 import numpy as np
 from PIL import Image
@@ -66,12 +49,7 @@ def embed_watermark_dct(image_array: np.ndarray,
                         alpha: float = 4.0,
                         repeats: int = 5,
                         k_per_bit: int = 8) -> np.ndarray:
-    """
-    Embed watermark into Y channel using DCT additive spread-spectrum.
-    - alpha controls strength (higher -> more robust but more visible)
-    - repeats: how many separate blocks encode each bit (repetition)
-    - k_per_bit: how many distinct mid-band coeffs per selected block to use
-    """
+
     img = Image.fromarray(image_array.astype(np.uint8))
     ycbcr = np.array(img.convert("YCbCr"), dtype=float)
     Y = ycbcr[:, :, 0]
@@ -132,10 +110,6 @@ def extract_watermark_dct(image_array: np.ndarray,
                           seed: int = 42,
                           repeats: int = 5,
                           k_per_bit: int = 8) -> np.ndarray:
-    """
-    Extract watermark previously embedded with embed_watermark_dct.
-    Uses same seed, repeats, and k_per_bit to retrieve bits with voting.
-    """
     img = Image.fromarray(image_array.astype(np.uint8))
     ycbcr = np.array(img.convert("YCbCr"), dtype=float)
     Y = ycbcr[:, :, 0]
@@ -191,7 +165,6 @@ def extract_watermark_dct(image_array: np.ndarray,
         return arr.reshape((payload_len,))
 
 
-# --- metrics --------------------------------------------------------
 def calculate_ber(original_wm: np.ndarray, extracted_wm: np.ndarray) -> float:
     return float(np.mean(original_wm.flatten() != extracted_wm.flatten()))
 

@@ -1,19 +1,7 @@
-"""
-ecc.py 	6 Simple Hamming(7,4) encoder/decoder utilities for bit arrays
-
-Functions:
-- hamming74_encode(bits, original_length=None) -> encoded_bits, pad_len
-- hamming74_decode(encoded_bits, pad_len) -> decoded_bits, num_corrected
-
-Notes: bits are numpy arrays of 0/1 uint8 or Python lists.
-"""
 import numpy as np
 
 
 def hamming74_encode(bits):
-    """Encode a 1D bit array using Hamming(7,4).
-    Returns encoded_bits (1D numpy uint8) and pad_len (number of padding bits added to make multiple of 4).
-    """
     b = np.asarray(bits, dtype=np.uint8).flatten()
     pad_len = (-len(b)) % 4
     if pad_len:
@@ -36,10 +24,6 @@ def hamming74_encode(bits):
 
 
 def hamming74_decode(encoded_bits, pad_len=0):
-    """Decode Hamming(7,4) encoded bits. Returns decoded_bits (trimmed to original length) and num_corrected.
-    encoded_bits: 1D array of length multiple of 7.
-    pad_len: number of padding bits that were added during encoding (0-3).
-    """
     eb = np.asarray(encoded_bits, dtype=np.uint8).flatten()
     if len(eb) % 7 != 0:
         raise ValueError('Encoded bits length must be multiple of 7')
